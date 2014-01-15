@@ -7,4 +7,5 @@
                   [clj-webdriver "0.6.0"]
                   [seesaw "1.4.4"]
                   [clj-time "0.6.0"]]
-  :main teslogger.core)
+  :main teslogger.splash)
+
