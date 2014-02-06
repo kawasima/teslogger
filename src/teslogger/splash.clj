@@ -8,7 +8,10 @@
 
 (defn open-main-window [browser-spec _]
   (dispose! splash-window)
-  (ui/make-main-window browser-spec))
+  (try
+    (ui/make-main-window browser-spec)
+    (catch Exception ex
+      (alert (.toString ex)))))
 
 (defn make-splash-window []
   (doto (window
@@ -25,4 +28,5 @@
       show!))
 
 (defn -main [& args]
-  (def splash-window (make-splash-window)))
+  (def splash-window (make-splash-window)))
+

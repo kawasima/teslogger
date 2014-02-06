@@ -1,2 +1,5 @@
 (to "http://www.google.com")
 (take-screenshot)
+(input-text "#gbqfq" "clojure")
+(implicit-wait 3000)
+(click "#gbqfba")

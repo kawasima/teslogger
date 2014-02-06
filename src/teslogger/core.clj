@@ -5,6 +5,8 @@
             [clj-time.format :as tm-fmt])
   (:use [clj-webdriver.taxi :rename {take-screenshot taxi-take-screenshot}]))
 
+(def ^:dynamic *cid*)
+
 (defn take-screenshot-handler [cid]
   (let [ss-path (io/file "screenshots"
                          (if (empty? cid) "other" cid)
@@ -15,7 +17,7 @@
 
 (defn take-screenshot
   ([]
-   (take-screenshot-handler nil))
+   (take-screenshot-handler *cid*))
   ([& opts] (apply taxi-take-screenshot opts)))
 
 (defn read-scripts [file]
@@ -25,12 +27,13 @@
         (recur (conj s v))
         s))))
 
-(defn run-script! [file & {callback-fn :callback
-                           setup-fn    :setup
-                           teardown-fn :teardown}]
+(defn run-script! [file cid & {callback-fn :callback
+                               setup-fn    :setup
+                               teardown-fn :teardown}]
   (let [nspace (create-ns (gensym "sandbox"))
         exp-seq (read-scripts (.getAbsolutePath file))]
-    (binding [*ns* nspace]
+    (binding [*ns*  nspace
+              *cid* cid]
       (refer-clojure)
       (use '[clj-webdriver.taxi :exclude [take-screenshot]])
       (refer 'teslogger.core :only '[take-screenshot])
@@ -44,4 +47,5 @@
 
 
 
-
+
+
