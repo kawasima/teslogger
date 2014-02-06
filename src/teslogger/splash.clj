@@ -1,4 +1,5 @@
 (ns teslogger.splash
+  (:gen-class)
   (:use [seesaw core mig])
   (:require [teslogger.ui :as ui]))
 

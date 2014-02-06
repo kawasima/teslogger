@@ -1,5 +1,4 @@
 (ns teslogger.core
-  (:gen-class)
   (:require [clojure.java.io :as io]
             [clj-time.core :as tm]
             [clj-time.format :as tm-fmt])
