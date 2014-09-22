@@ -2,7 +2,8 @@
   (:require [clojure.java.io :as io]
             [clj-time.core :as tm]
             [clj-time.format :as tm-fmt])
-  (:use [clj-webdriver.taxi :rename {take-screenshot taxi-take-screenshot}]))
+  (:use [clj-webdriver.taxi :rename {take-screenshot taxi-take-screenshot}]
+        [ulon-colon.producer :only [start-producer produce]]))
 
 (def ^:dynamic *cid*)
 
@@ -43,8 +44,5 @@
             (eval (first exp)))
           (recur (rest exp) (inc idx))))
       (when teardown-fn (teardown-fn (count exp-seq))))))
-
-
-
 
 

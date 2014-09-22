@@ -1,13 +1,15 @@
-(defproject teslogger "0.1.0"
+(defproject teslogger "0.2.0-SNAPSHOT"
   :description "A tool for taking screenshots."
   :url "https://github.com/kawasima/teslogger"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [ [org.clojure/clojure "1.5.1"]
-                  [clj-webdriver "0.6.0"]
+  :dependencies [ [org.clojure/clojure "1.6.0"]
+                  [clj-webdriver "0.6.1"]
                   [seesaw "1.4.4"]
-                  [clj-time "0.6.0"]]
+                  [clj-time "0.8.0"]
+                  [environ "1.0.0"]
+                  [net.unit8/ulon-colon "0.2.0-SNAPSHOT"]
+                  [overtone/at-at "1.2.0"]]
   :aot :all
   :main teslogger.splash)
-
 

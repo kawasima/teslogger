@@ -1,7 +1,8 @@
 (ns teslogger.splash
   (:gen-class)
   (:use [seesaw core mig])
-  (:require [teslogger.ui :as ui]))
+  (:require [teslogger.ui :as ui]
+            [teslogger.sender :as sender]))
 
 (declare ^:dynamic splash-window)
 (def product-title
@@ -29,5 +30,6 @@
       show!))
 
 (defn -main [& args]
-  (def splash-window (make-splash-window)))
+  (def splash-window (make-splash-window))
+  (sender/start-sender))
 
