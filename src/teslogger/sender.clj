@@ -5,7 +5,8 @@
         [overtone.at-at])
   (:import [java.io ByteArrayOutputStream DataOutputStream File]
            [java.net InetSocketAddress InetAddress]
-           [java.nio ByteBuffer ]
+           [java.nio ByteBuffer]
+           [java.nio.file Files]
            [java.nio.channels DatagramChannel])
   (:refer-clojure :exclude [send]))
 
@@ -16,21 +17,20 @@
     (try 
       (doto dos
         (.write (.getAddress (InetAddress/getLocalHost)) 0 4)
-        (.writeInt (or (env :port) 5629)))
+        (.writeInt (or (env :teslogger-sender-port) 5629)))
       (.. ch socket (setBroadcast true))
       (.send ch
         (ByteBuffer/wrap (.toByteArray baos))
-        (InetSocketAddress. "255.255.255.255" (or (env :port) 56294)))
+        (InetSocketAddress. "255.255.255.255" (or (env :teslogger-server-port) 56294)))
       (finally (.close ch)))))
 
 (defn send! []
   (let [targets (->> (file-seq (File. "screenshots"))
                      (filter #(.isFile %)))]
     (doseq [target targets]
-      (println "send!" target)
       (when (= :commit (<!!(produce {:name (.. target getName)
                               :case-id (.. target getParentFile getName)
-                              :body (slurp target)}))) 
+                              :body (Files/readAllBytes (.toPath target))}))) 
         (.delete target)))))
 
 (defn start-sender []

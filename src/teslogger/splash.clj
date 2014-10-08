@@ -1,8 +1,10 @@
 (ns teslogger.splash
   (:gen-class)
-  (:use [seesaw core mig])
-  (:require [teslogger.ui :as ui]
-            [teslogger.sender :as sender]))
+  (:use [seesaw core mig]
+        [teslogger.netty :only [run-netty]])
+  (:require (teslogger (ui :as ui)
+                       (sender :as sender)
+                       (webapi :as webapi))))
 
 (declare ^:dynamic splash-window)
 (def product-title
@@ -31,5 +33,6 @@
 
 (defn -main [& args]
   (def splash-window (make-splash-window))
+  (run-netty (webapi/app) {:port (or (env :teslogger-webapi-port) 5621)})
   (sender/start-sender))
 
