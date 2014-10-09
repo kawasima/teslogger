@@ -1,5 +1,5 @@
 (to "http://www.google.com")
 (take-screenshot)
 (input-text "#gbqfq" "clojure")
-(implicit-wait 3000)
-(click "#gbqfba")
+(click "#gbqfb")
+(click (find-element {:css "div.rc h3.r a"}))

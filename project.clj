@@ -12,6 +12,6 @@
                  [environ "1.0.0"]
                  [net.unit8/ulon-colon "0.2.0"]
                  [overtone/at-at "1.2.0"]]
-;  :aot []
+  :aot [teslogger.splash]
   :main teslogger.splash)
 

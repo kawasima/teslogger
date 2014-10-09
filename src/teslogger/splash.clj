@@ -1,6 +1,7 @@
 (ns teslogger.splash
   (:gen-class)
   (:use [seesaw core mig]
+        [environ.core]
         [teslogger.netty :only [run-netty]])
   (:require (teslogger (ui :as ui)
                        (sender :as sender)
