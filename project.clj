@@ -1,4 +1,4 @@
-(defproject net.unit8.teslogger/teslogger "0.2.0-SNAPSHOT"
+(defproject net.unit8.teslogger/teslogger "0.2.0"
   :description "A tool for taking screenshots."
   :url "https://github.com/kawasima/teslogger"
   :license {:name "Eclipse Public License"
