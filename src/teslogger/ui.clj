@@ -1,18 +1,21 @@
 (ns teslogger.ui
   (:require [clojure.java.io :as io]
-            [clojure.string :as string])
+            [clojure.string :as string]
+            [teslogger.sender :as sender])
   (:use [teslogger.core]
+        [teslogger.netty :only [run-netty]]
+        [environ.core]
         [seesaw core mig chooser color border]
-        [clj-webdriver.taxi :only [new-driver set-driver! quit]]))
+        [clj-webdriver.taxi :only [new-driver set-driver! quit]])
+  (:import [org.openqa.selenium.firefox FirefoxProfile]
+           [java.awt.event WindowAdapter]))
 
 (declare clear-button)
 
 (def parent-frame
   (frame
    :title "teslogger"
-   :on-close :dispose
-   :listen [:window-closed
-            (fn [e] (quit))]))
+   :on-close :dispose))
 
 (def run-progress-bar
   (progress-bar :paint-string? true))
@@ -101,8 +104,12 @@
     (set-action* btn take-screenshot-action)
     btn))
 
-(defn make-main-window [browser-spec]
-  (let [driver (new-driver {:browser browser-spec})]
+(defn- driver-opts []
+  (when-let [profile (env :firefox-profile)]
+    (FirefoxProfile. (io/file profile))))
+
+(defn make-main-window [browser-spec webapi-shutdown-fn ]
+  (let [driver (new-driver {:browser browser-spec :profile (driver-opts)})]
     (config!
      parent-frame
      :content (mig-panel
@@ -123,9 +130,14 @@
                                 :background "#d65430"
                                 :border (empty-border :thickness 10)), "span 6,wmin 100, center"]]
                :background "#2c3e50"))
+    (.addWindowListener parent-frame
+                        (proxy [WindowAdapter] []
+                          (windowClosed [e]
+                            (quit)
+                            (sender/stop-sender)
+                            (webapi-shutdown-fn))))
     (clear-result!)
     (doto parent-frame
-      ;;(.setUndecorated true)
       (pack!)
       (show!)
       (.setAlwaysOnTop true))

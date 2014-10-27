@@ -31,10 +31,8 @@
            (.addLast "chunkedWriter" (ChunkedWriteHandler.))
            (.addLast "handler" (make-handler handler (or (:zerocopy options) false))))))))
 
-(defn- create-server [{:keys [port] :or {port 5621} :as options} handler]
-  (let [boss-group (NioEventLoopGroup.)
-        worker-group (NioEventLoopGroup.)
-        bootstrap (ServerBootstrap.)]
+(defn- create-server [{:keys [port boss-group worker-group] :or {port 5621} :as options} handler]
+  (let [bootstrap (ServerBootstrap.)]
     (doto bootstrap
       (.group boss-group worker-group)
       (.channel NioServerSocketChannel)
@@ -48,5 +46,14 @@
   (.bind bs (InetSocketAddress. port)))
 
 (defn run-netty [handler options]
-  (let [bootstrap (create-server options handler)
-        future (.. bootstrap bind sync)]))
+  (let [config (assoc options
+                 :boss-group (NioEventLoopGroup.)
+                 :worker-group (NioEventLoopGroup.))
+        bootstrap (create-server config handler)
+        channel (.. bootstrap bind sync channel)]
+    (fn []
+      (try
+        (.close channel)
+        (finally 
+          (.shutdownGracefully (:worker-group config))
+          (.shutdownGracefully (:boss-group config)))))))

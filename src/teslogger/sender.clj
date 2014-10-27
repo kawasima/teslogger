@@ -1,5 +1,5 @@
 (ns teslogger.sender
-  (:use [ulon-colon.producer :only [start-producer produce]]
+  (:use [ulon-colon.producer :only [start-producer produce stop-producer]]
         [clojure.core.async :only [<!!]]
         [environ.core]
         [overtone.at-at])
@@ -9,6 +9,10 @@
            [java.nio.file Files]
            [java.nio.channels DatagramChannel])
   (:refer-clojure :exclude [send]))
+
+(def producer (atom nil))
+(def pool (mk-pool))
+(def job  (atom nil))
 
 (defn notify []
   (let [baos (ByteArrayOutputStream.)
@@ -35,5 +39,11 @@
 
 (defn start-sender []
   (notify)
-  (let [producer (start-producer)]
-    (every 5000 #(send!) (mk-pool))))
+  (reset! producer (start-producer))
+  (reset! job (every 5000 #(send!) pool)))
+
+(defn stop-sender []
+  (stop-producer @producer)
+  (kill @job)
+  (.shutdown (:thread-pool @(:pool-atom pool)))
+  (reset! producer nil))
