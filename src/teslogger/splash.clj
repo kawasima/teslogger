@@ -19,12 +19,12 @@
 (defn make-splash-window []
   (doto (window
          :content (mig-panel :items [[(label :icon "logo.png") "span,grow"]
-                                 [(button :icon "ie.png"
-                                          :listen [:action (partial open-main-window :ie)]) ""]
-                                 [(button :icon "firefox.png"
-                                          :listen [:action (partial open-main-window :firefox)]) ""]
-                                 [(button :icon "chrome.png"
-                                          :listen [:action (partial open-main-window :chrome)]) ""]]))
+                                     [(button :icon "ie.png"
+                                              :listen [:action (partial open-main-window :ie)]) ""]
+                                     [(button :icon "firefox.png"
+                                              :listen [:action (partial open-main-window :firefox)]) ""]
+                                     [(button :icon "chrome.png"
+                                              :listen [:action (partial open-main-window :chrome)]) ""]]))
       pack!
       (.setLocationRelativeTo nil)
       (.setAlwaysOnTop true)
@@ -33,4 +33,3 @@
 (defn -main [& args]
   (def splash-window (make-splash-window))
   (sender/start-sender))
-
